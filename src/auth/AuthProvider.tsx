@@ -1,10 +1,12 @@
-import { createContext, useCallback, useMemo, useState } from "react";
+import { createContext, useCallback, useEffect, useMemo, useState } from "react";
 import { keycloak, getRealmRoles } from "./keycloak";
 import type { AuthContextValue, AppRole } from "./types";
+import { setAccessTokenProvider } from "../lib/api-client";
 export const AuthContext = createContext<AuthContextValue | null>(null);
 const APP_ROLES: AppRole[] = ["STUDENT", "COMPANY", "SUPERVISOR", "ADMIN"];
 export function AuthProvider({ children, authEnabled }: { children: React.ReactNode; authEnabled: boolean }) {
   const [, refresh] = useState(0);
+  useEffect(() => { setAccessTokenProvider(async () => { if (!keycloak?.authenticated) return undefined; await keycloak.updateToken(30); return keycloak.token; }); }, []);
   const login = useCallback(async () => { if (keycloak) await keycloak.login(); }, []);
   const logout = useCallback(async () => { if (keycloak) await keycloak.logout({ redirectUri: window.location.origin }); }, []);
   const getToken = useCallback(async () => { if (!keycloak?.authenticated) return undefined; await keycloak.updateToken(30); return keycloak.token; }, []);
