@@ -1,0 +1,2 @@
+import { Link } from "react-router-dom";
+export function UnauthorizedPage() { return <section className="auth-card"><h1>Access denied</h1><p>Your account does not have the role required for this workspace.</p><Link to="/">Return to overview</Link></section>; }

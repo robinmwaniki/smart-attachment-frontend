@@ -1,0 +1,6 @@
+import { Link } from "react-router-dom";
+import { useAuth } from "../auth/useAuth";
+export function DashboardPage() {
+ const auth = useAuth();
+ return <section className="hero"><p className="eyebrow">ATTACHMENT MANAGEMENT</p><h1>One platform for every stage of an internship.</h1><p className="lead">Manage applications, placements, logbooks and progress through a connected workspace.</p>{auth.isAuthenticated ? <div className="panel"><h2>Welcome{auth.username ? `, ${auth.username}` : ""}</h2><p>Your account roles: {auth.roles.join(", ") || "No application role assigned"}.</p></div> : <div className="actions"><Link className="primary-button" to="/login">Sign in to continue</Link><span className="muted">Secure access powered by Keycloak</span></div>}<div className="role-grid">{["Students", "Companies", "Supervisors", "Administrators"].map((name) => <article className="role-card" key={name}><h3>{name}</h3><p>Dedicated tools and workflows for {name.toLowerCase()}.</p></article>)}</div></section>;
+}
