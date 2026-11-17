@@ -8,7 +8,7 @@ afterEach(() => {
 
 function createAdapter(): { adapter: AxiosAdapter; captured: Array<{ authorization: unknown }> } {
   const captured: Array<{ authorization: unknown }> = [];
-  const adapter: AxiosAdapter = async (config) => {
+  const adapter: AxiosAdapter = vi.fn(async (config) => {
     captured.push({ authorization: config.headers.get("Authorization") });
     return {
       data: { ok: true },
@@ -17,7 +17,7 @@ function createAdapter(): { adapter: AxiosAdapter; captured: Array<{ authorizati
       headers: {},
       config,
     };
-  };
+  });
   return { adapter, captured };
 }
 
