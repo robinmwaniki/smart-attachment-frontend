@@ -20,7 +20,7 @@ React + TypeScript single-page application for the Smart Attachment & Internship
 3. Copy `.env.example` to `.env` and set the public frontend configuration.
 4. Start Vite: `npm run dev`.
 
-The public overview works without Keycloak. Protected areas remain unavailable until Keycloak is configured.
+The public overview works without Keycloak. Protected areas remain unavailable until Keycloak is configured and reachable.
 
 ## Environment
 | Variable | Purpose |
@@ -31,6 +31,19 @@ The public overview works without Keycloak. Protected areas remain unavailable u
 | `VITE_KEYCLOAK_CLIENT_ID` | Public SPA client ID |
 
 Every `VITE_*` value is exposed to the browser. Never put passwords, client secrets, private keys or database credentials in these variables. Configure Keycloak as a public client, enable Standard Flow, require PKCE S256, and register exact development/production redirect URIs and web origins.
+
+## Authentication startup
+- The OIDC adapter is initialized once before React renders. This prevents protected routes from briefly treating an unresolved session as anonymous.
+- Login, logout and token-refresh events update the shared authentication context.
+- The Axios API client obtains a current access token from the Keycloak adapter and refreshes it before protected requests.
+- Tokens are not copied into localStorage or sessionStorage by application code.
+- If Keycloak is not configured, the public overview remains available and protected routes explain that authentication is unavailable.
+- If Keycloak is configured but cannot be reached, protected routes show an availability message instead of silently treating the configuration as disabled.
+
+Keycloak server/realm setup and Spring Boot Resource Server validation are tracked in the backend repository's issue #20:
+https://github.com/robinmwaniki/Smart-Attachment_-Internship-Management-Platform/issues/20
+
+The API must independently validate bearer tokens and enforce authorization. Hiding a route in React is not a security boundary. Application profile and workflow data remain in the backend database. Link accounts using Keycloak immutable subject (`sub`), not email.
 
 ## Quality checks
 ```bash
@@ -46,11 +59,6 @@ docker build -t smart-attachment-frontend .
 docker run --rm -p 8081:80 smart-attachment-frontend
 ```
 Open `http://localhost:8081`.
-
-## Authentication and API security
-Keycloak owns authentication and identity. The frontend uses the Keycloak adapter and does not write access tokens to localStorage. The API must independently validate bearer tokens as an OAuth2 Resource Server and enforce authorization; hiding a route in React is not a security boundary. Application profile and workflow data remain in the backend database. Link accounts using Keycloak immutable subject (`sub`), not email.
-
-The Axios client exposes a token-provider seam in `src/lib/api-client.ts`; wire it to `useAuth().getToken` in the auth/API integration task before making protected API calls. Keep API endpoint contracts in typed service modules and add integration tests as backend endpoints are finalized.
 
 ## Project structure
 - `src/auth`: Keycloak initialization, auth context and route guards
