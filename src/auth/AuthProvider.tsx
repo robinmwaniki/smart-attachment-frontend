@@ -41,7 +41,7 @@ export function AuthProvider({
     }
 
     // Keep the Axios boundary coupled to the active Keycloak session, not to
-    // individual service modules. Tokens are held by the adapter in memory.
+    // individual service modules. Tokens remain managed by the adapter.
     const tokenProvider = async (): Promise<string | undefined> => {
       if (!keycloak?.authenticated) return undefined;
       try {
@@ -55,10 +55,12 @@ export function AuthProvider({
     };
 
     setAccessTokenProvider(tokenProvider);
-    keycloak?.onAuthSuccess = syncAuthState;
-    keycloak?.onAuthLogout = syncAuthState;
-    keycloak?.onAuthRefreshSuccess = syncAuthState;
-    keycloak?.onAuthRefreshError = syncAuthState;
+    if (keycloak) {
+      keycloak.onAuthSuccess = syncAuthState;
+      keycloak.onAuthLogout = syncAuthState;
+      keycloak.onAuthRefreshSuccess = syncAuthState;
+      keycloak.onAuthRefreshError = syncAuthState;
+    }
     syncAuthState();
 
     return () => {
