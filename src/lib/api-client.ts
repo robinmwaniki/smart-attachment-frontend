@@ -1,4 +1,4 @@
-import axios, { type AxiosRequestConfig } from "axios";
+import axios from "axios";
 
 type AccessTokenProvider = () => Promise<string | undefined>;
 let tokenProvider: AccessTokenProvider | undefined;
@@ -13,17 +13,6 @@ export const apiClient = axios.create({
   timeout: 15_000,
   headers: { "Content-Type": "application/json", Accept: "application/json" },
 });
-
-export async function attachAccessToken(config: AxiosRequestConfig): Promise<AxiosRequestConfig> {
-  const token = await tokenProvider?.();
-  if (token) {
-    config.headers = { ...config.headers, Authorization: `Bearer ${token}` };
-  } else if (config.headers) {
-    delete (config.headers as Record<string, unknown>).Authorization;
-    delete (config.headers as Record<string, unknown>).authorization;
-  }
-  return config;
-}
 
 apiClient.interceptors.request.use(async (config) => {
   const token = await tokenProvider?.();
