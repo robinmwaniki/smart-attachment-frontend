@@ -1,6 +1,22 @@
 # Smart Attachment Frontend
 
+> **Project status: IN PROGRESS.** This React application is the customer-facing frontend for the Smart Attachment & Internship Management Platform. Feature integration continues on `develop`; deployment is intentionally paused.
+>
+> **Latest update — 19 November 2026:** the public product overview and Keycloak authentication lifecycle improvements have been merged into `develop`. The remaining role-specific operational dashboards and end-to-end Keycloak runtime verification are still in progress.
+
 React + TypeScript single-page application for the Smart Attachment & Internship Management Platform. This repository is separate from the Spring Boot API.
+
+## Current delivery status
+
+| Area | Status | Notes |
+| --- | --- | --- |
+| Public product overview | Completed | University, student and employer value propositions, placement lifecycle, workspace preview and responsive navigation |
+| Keycloak startup and auth lifecycle | Completed | Single initialization, PKCE, role mapping, token refresh and safe failure states have regression coverage |
+| Role-specific operational dashboards | In progress | Public overview is not a substitute for fully implemented university, student and company workflows |
+| Sentry monitoring | Deferred | Requires a test-project DSN, CI source-map secret and end-to-end privacy validation |
+| Deployment | Paused | No deployment work until explicitly resumed |
+
+See [docs/PROJECT_STATUS.md](docs/PROJECT_STATUS.md) for the progress log and delivery rules.
 
 ## Stack
 - React 19, TypeScript (strict), Vite
@@ -68,4 +84,4 @@ Open `http://localhost:8081`.
 - `.github/workflows`: CI checks
 
 ## Delivery workflow
-Create feature branches from `develop`; each feature should have its own issue and pull request targeting `develop`. Promote to `main` only after integration checks and end-to-end validation pass.
+Create feature branches from `develop`; each feature should have its own issue and pull request targeting `develop`. Merge only after all required CI checks pass. Promote to `main` only after integration checks and end-to-end validation pass. Keep the README status and progress log current after every meaningful change.
