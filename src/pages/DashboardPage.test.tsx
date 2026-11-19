@@ -33,7 +33,7 @@ describe("DashboardPage public overview", () => {
       name: /bring every placement into one connected workspace/i,
     })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: /universities & coordinators/i })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: /students/i })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Students" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: /employers & supervisors/i })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: /from first application to final review/i })).toBeInTheDocument();
   });
